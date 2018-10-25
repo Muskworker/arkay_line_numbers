@@ -2,6 +2,7 @@ $current_line = 0
 $lines = []
 $fors = {}
 
+# line(10) { puts "Hello World" }
 def line(symbol)
   $lines << symbol
 
@@ -10,10 +11,12 @@ def line(symbol)
   end
 end
 
+# line(20) { goto 30 }
 def goto(symbol)
   throw :goto, symbol
 end
 
+# line(30) { __for__(:i, 1..@whatever) }
 def __for__(symbol, range)
   info = { value: range.first,
            range: range,
@@ -22,6 +25,12 @@ def __for__(symbol, range)
   $fors.update(symbol => info)
 end
 
+# line(40) { puts "This is iteration #{iteration(:i)}" }
+def iteration(symbol)
+  $fors[symbol][:value]
+end
+
+# line(50) { __next__(:i) }
 def __next__(symbol)
   $fors[symbol][:value] += 1
 
@@ -30,10 +39,7 @@ def __next__(symbol)
   end
 end
 
-def iteration(symbol)
-  $fors[symbol][:value]
-end
-
+# Run lines sequentially.
 def run
   $current_line ||= 0
 
